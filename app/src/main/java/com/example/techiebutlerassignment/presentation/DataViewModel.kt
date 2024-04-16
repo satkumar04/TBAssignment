@@ -9,12 +9,20 @@ import androidx.lifecycle.viewModelScope
 import com.example.techiebutlerassignment.domain.model.DataModel
 import com.example.techiebutlerassignment.domain.usecases.GetDataUseCase
 import kotlinx.coroutines.launch
+import com.example.techiebutlerassignment.presentation.utils.common.ListState
+
 
 class DataViewModel : ViewModel() {
     private val useCase = GetDataUseCase()
-
+    private var response: List<DataModel> = listOf()
     private val _dataList = mutableStateListOf<DataModel>()
     var errorMessage: String by mutableStateOf("")
+    private var lastIndex = 0;
+
+    private var page by mutableStateOf(1)
+    var canPaginate by mutableStateOf(false)
+    var listState by mutableStateOf(ListState.IDLE)
+
 
     val dataList: List<DataModel>
         get() = _dataList
@@ -23,11 +31,32 @@ class DataViewModel : ViewModel() {
         viewModelScope.launch {
 
             try {
-                _dataList.addAll(useCase.execute())
+                _dataList.clear()
+                response = useCase.execute()
+                if (response.size < 20) {
+                    _dataList.addAll(useCase.execute())
+                } else {
+                   // listState =  ListState.PAGINATING
+                    lastIndex = response.subList(0, 20).size
+                    _dataList.addAll(response.subList(0, 20))
+                }
 
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
             }
         }
     }
+
+
+
+    fun loadMoreData() {
+        if(lastIndex < response.size) {
+
+            lastIndex = response.subList(0, lastIndex).size
+            _dataList.addAll(response.subList(_dataList.size, lastIndex+_dataList.size))
+            listState =  ListState.PAGINATING
+        }
+
+    }
 }
+

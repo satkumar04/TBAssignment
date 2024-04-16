@@ -1,6 +1,6 @@
 package com.example.techiebutlerassignment.domain.model
 
-data class DataModel(var userId: Int?,
-                     var id: Int?,
-                     var title: String?,
-                     var body: String?)
+data class DataModel(val userId: Int?,
+                     val id: Int?,
+                     val title: String?,
+                     val body: String?)
