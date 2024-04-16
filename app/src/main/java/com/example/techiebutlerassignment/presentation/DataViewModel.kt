@@ -10,6 +10,7 @@ import com.example.techiebutlerassignment.domain.model.DataModel
 import com.example.techiebutlerassignment.domain.usecases.GetDataUseCase
 import kotlinx.coroutines.launch
 import com.example.techiebutlerassignment.presentation.utils.common.ListState
+import com.example.techiebutlerassignment.presentation.utils.common.LoaderState
 
 
 class DataViewModel : ViewModel() {
@@ -19,9 +20,9 @@ class DataViewModel : ViewModel() {
     var errorMessage: String by mutableStateOf("")
     private var lastIndex = 0;
 
-    private var page by mutableStateOf(1)
-    var canPaginate by mutableStateOf(false)
+
     var listState by mutableStateOf(ListState.IDLE)
+    var loaderState by mutableStateOf(LoaderState.IDLE)
 
 
     val dataList: List<DataModel>
@@ -31,12 +32,15 @@ class DataViewModel : ViewModel() {
         viewModelScope.launch {
 
             try {
+                loaderState =  LoaderState.LOADING
                 _dataList.clear()
                 response = useCase.execute()
                 if (response.size < 20) {
                     _dataList.addAll(useCase.execute())
+
                 } else {
-                   // listState =  ListState.PAGINATING
+                    listState =  ListState.PAGINATING
+
                     lastIndex = response.subList(0, 20).size
                     _dataList.addAll(response.subList(0, 20))
                 }
@@ -44,17 +48,21 @@ class DataViewModel : ViewModel() {
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
             }
+            loaderState =  LoaderState.IDLE
         }
     }
 
 
 
     fun loadMoreData() {
-        if(lastIndex < response.size) {
-
-            lastIndex = response.subList(0, lastIndex).size
-            _dataList.addAll(response.subList(_dataList.size, lastIndex+_dataList.size))
+        if(_dataList.size < response.size) {
             listState =  ListState.PAGINATING
+            lastIndex = response.subList(_dataList.size, lastIndex+_dataList.size).size
+            _dataList.addAll(response.subList(_dataList.size, lastIndex+_dataList.size))
+        }
+        else
+        {
+            listState =  ListState.PAGINATION_EXHAUST
         }
 
     }

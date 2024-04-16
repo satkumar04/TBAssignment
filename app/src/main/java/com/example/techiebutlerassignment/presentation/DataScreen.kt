@@ -3,6 +3,7 @@ package com.example.techiebutlerassignment.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.techiebutlerassignment.presentation.utils.common.ListState
+import com.example.techiebutlerassignment.presentation.utils.common.LoaderState
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Delay
@@ -53,9 +56,34 @@ fun DataScreen(navController: NavController) {
         if (dataViewModel.errorMessage.isEmpty()) {
             LazyColumn(
                 modifier = Modifier
-                    .padding(it)
+                    .padding(it),
+                state = lazyColumnListState
 
             ) {
+                item(key = dataViewModel.loaderState) {
+                    when (dataViewModel.loaderState) {
+                        LoaderState.IDLE -> {
+
+                        }
+
+                        LoaderState.LOADING -> {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+
+                                CircularProgressIndicator(color = Color.Black)
+                                Text(text = "Data Loading...")
+                            }
+
+                        }
+
+                    }
+                }
+
+
+
                 items(dataViewModel.dataList) { data ->
                     CardItem(data = data, onItemClick = {
                         val gson: Gson = GsonBuilder().create()
@@ -72,10 +100,10 @@ fun DataScreen(navController: NavController) {
 
                 }
 
-                item (
+                item(
                     key = dataViewModel.listState,
                 ) {
-                    when(dataViewModel.listState) {
+                    when (dataViewModel.listState) {
                         ListState.LOADING -> {
                             Column(
                                 modifier = Modifier
@@ -92,6 +120,7 @@ fun DataScreen(navController: NavController) {
                                 CircularProgressIndicator(color = Color.Black)
                             }
                         }
+
                         ListState.PAGINATING -> {
                             Column(
                                 modifier = Modifier
@@ -102,13 +131,14 @@ fun DataScreen(navController: NavController) {
                                 Text(text = "Pagination Loading")
 
                                 CircularProgressIndicator(color = Color.Black)
-//                                LaunchedEffect(Unit, block = {
-//                                    delay(1.seconds)
-//                                    dataViewModel.loadMoreData()
-//                                })
+                                LaunchedEffect(Unit, block = {
+                                    delay(1.seconds)
+                                    dataViewModel.loadMoreData()
+                                })
 
                             }
                         }
+
                         ListState.PAGINATION_EXHAUST -> {
                             Column(
                                 modifier = Modifier
@@ -117,13 +147,11 @@ fun DataScreen(navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center,
                             ) {
-                                Icon(imageVector = Icons.Rounded.Face, contentDescription = "")
-
-                                Text(text = "Nothing left.")
 
                                 TextButton(
                                     modifier = Modifier
                                         .padding(top = 8.dp),
+                                    elevation = ButtonDefaults.buttonElevation(0.dp),
                                     onClick = {
                                         coroutineScope.launch {
                                             lazyColumnListState.animateScrollToItem(0)
@@ -150,6 +178,7 @@ fun DataScreen(navController: NavController) {
                                 )
                             }
                         }
+
                         else -> {}
                     }
                 }
