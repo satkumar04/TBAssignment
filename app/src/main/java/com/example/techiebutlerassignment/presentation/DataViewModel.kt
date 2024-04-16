@@ -36,7 +36,7 @@ class DataViewModel : ViewModel() {
                 _dataList.clear()
                 response = useCase.execute()
                 if (response.size < 20) {
-                    _dataList.addAll(useCase.execute())
+                    _dataList.addAll(response)
 
                 } else {
                     listState =  ListState.PAGINATING
@@ -65,6 +65,11 @@ class DataViewModel : ViewModel() {
             listState =  ListState.PAGINATION_EXHAUST
         }
 
+    }
+
+    override fun onCleared() {
+        _dataList.clear()
+        super.onCleared()
     }
 }
 
