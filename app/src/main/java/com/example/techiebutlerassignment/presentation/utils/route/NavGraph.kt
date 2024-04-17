@@ -24,7 +24,6 @@ fun NavGraph() {
 
 
         composable("detail/{data}") { navBackStackEntry ->
-            /* Extracting the id from the route */
             val dataString = navBackStackEntry.arguments?.getString("data")
             /* We check if it's not null */
             dataString?.let { data ->

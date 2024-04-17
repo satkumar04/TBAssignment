@@ -3,6 +3,7 @@ package com.example.techiebutlerassignment.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.techiebutlerassignment.presentation.utils.common.ListState
 import com.example.techiebutlerassignment.presentation.utils.common.LoaderState
+import com.example.techiebutlerassignment.presentation.utils.route.AppScreen
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
@@ -72,8 +72,9 @@ fun DataScreen(navController: NavController) {
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-
+                                Spacer(modifier = Modifier.padding(20.dp))
                                 CircularProgressIndicator(color = Color.Black)
+                                Spacer(modifier = Modifier.padding(20.dp))
                                 Text(text = "Data Loading...")
                             }
 
@@ -82,12 +83,11 @@ fun DataScreen(navController: NavController) {
                     }
                 }
 
-
-
-                items(dataViewModel.dataList) { data ->
+                items( dataViewModel.dataList) { data ->
                     CardItem(data = data, onItemClick = {
                         val gson: Gson = GsonBuilder().create()
                         val dataJson = gson.toJson(data)
+
 
                         navController.navigate(
                             "detail/{data}" //Just modify your route accordingly
@@ -95,7 +95,11 @@ fun DataScreen(navController: NavController) {
                                     oldValue = "{data}",
                                     newValue = dataJson
                                 )
-                        )
+                        ){
+                            popUpTo("home_screen") {
+                                inclusive = true
+                            }
+                        }
                     })
 
                 }
@@ -187,6 +191,7 @@ fun DataScreen(navController: NavController) {
             Text(dataViewModel.errorMessage)
         }
     }
+
 
 
 }
