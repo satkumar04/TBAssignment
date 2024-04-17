@@ -32,15 +32,15 @@ fun DetailsScreen(jasonData: String) {
     ) {
         Column {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Id: ${data.id}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Id: ${data.id}", fontSize = 18.sp, fontWeight = FontWeight.Bold,color = Color.Gray)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "User Id: ${data.userId}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = "User Id: ${data.userId}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
             data.title?.let {
-                Text(text = "Title: $it ", fontSize = 14.sp, color = Color.Gray)
+                Text(text = "Title: $it ", fontSize = 16.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Description: ${data.body}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Description: ${data.body}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
 
     }
