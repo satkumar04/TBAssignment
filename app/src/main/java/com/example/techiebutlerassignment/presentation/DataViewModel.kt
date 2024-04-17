@@ -11,7 +11,6 @@ import com.example.techiebutlerassignment.domain.usecases.GetDataUseCase
 import kotlinx.coroutines.launch
 import com.example.techiebutlerassignment.presentation.utils.common.ListState
 import com.example.techiebutlerassignment.presentation.utils.common.LoaderState
-import kotlinx.coroutines.Job
 
 class DataViewModel : ViewModel() {
     private val useCase = GetDataUseCase()
@@ -31,21 +30,21 @@ class DataViewModel : ViewModel() {
     init {
         loaderState =  LoaderState.IDLE
         listState = ListState.IDLE
-        onEvent(HomeEvent.GetHome)
+        onEvent(DataEvent.GetData)
     }
 
-    private fun onEvent(event: HomeEvent) {
+    private fun onEvent(event: DataEvent) {
         viewModelScope.launch {
             when (event) {
-                is HomeEvent.GetHome -> {
+                is DataEvent.GetData -> {
                    getDataList()
                 }
             }
         }
     }
 
-    sealed class HomeEvent {
-        object GetHome : HomeEvent()
+    sealed class DataEvent {
+        data object GetData : DataEvent()
     }
 
     private suspend fun getDataList() {
@@ -86,7 +85,7 @@ class DataViewModel : ViewModel() {
     }
 
     override fun onCleared() {
-        _dataList.clear()
+       // _dataList.clear()
         super.onCleared()
     }
 }

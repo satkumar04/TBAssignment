@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
@@ -31,18 +34,28 @@ fun DetailsScreen(jasonData: String) {
     ) {
         Column {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Id: ${data.id}", fontSize = 18.sp, fontWeight = FontWeight.Bold,color = Color.Gray)
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "User Id: ${data.userId}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
-            data.title?.let {
-                Text(text = "Title: $it ", fontSize = 16.sp, color = Color.Gray)
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Description: ${data.body}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            DetailProperty(label = "Id", value ="${data.id}" )
+            DetailProperty(label = "UserId", value ="${data.userId}" )
+            DetailProperty(label = "Title", value ="${data.title}" )
+            DetailProperty(label = "Description", value ="${data.body}" )
+
         }
 
     }
+}
 
+@Composable
+fun DetailProperty(label: String, value: String) {
+    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+        Text(
+            text = label,
+            modifier = Modifier.height(24.dp),
+            color = Color.Gray,
+            style = MaterialTheme.typography.titleSmall
 
+        )
+        Text(text = value, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(20.dp))
+        Divider(modifier = Modifier.padding(bottom = 4.dp))
+    }
 }
