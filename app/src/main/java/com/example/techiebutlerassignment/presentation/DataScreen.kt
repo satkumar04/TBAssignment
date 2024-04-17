@@ -45,9 +45,7 @@ fun DataScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val lazyColumnListState = rememberLazyListState()
 
-    LaunchedEffect(Unit, block = {
-        dataViewModel.getDataList()
-    })
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "Techie Butler Assignment") })
@@ -97,7 +95,7 @@ fun DataScreen(navController: NavController) {
                                 )
                         ){
                             popUpTo("home_screen") {
-                                inclusive = true
+                                inclusive = false
                             }
                         }
                     })

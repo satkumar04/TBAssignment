@@ -11,7 +11,7 @@ import com.example.techiebutlerassignment.domain.usecases.GetDataUseCase
 import kotlinx.coroutines.launch
 import com.example.techiebutlerassignment.presentation.utils.common.ListState
 import com.example.techiebutlerassignment.presentation.utils.common.LoaderState
-
+import kotlinx.coroutines.Job
 
 class DataViewModel : ViewModel() {
     private val useCase = GetDataUseCase()
@@ -24,12 +24,31 @@ class DataViewModel : ViewModel() {
     var listState by mutableStateOf(ListState.IDLE)
     var loaderState by mutableStateOf(LoaderState.IDLE)
 
-
     val dataList: List<DataModel>
         get() = _dataList
 
-    fun getDataList() {
+
+    init {
+        loaderState =  LoaderState.IDLE
+        listState = ListState.IDLE
+        onEvent(HomeEvent.GetHome)
+    }
+
+    private fun onEvent(event: HomeEvent) {
         viewModelScope.launch {
+            when (event) {
+                is HomeEvent.GetHome -> {
+                   getDataList()
+                }
+            }
+        }
+    }
+
+    sealed class HomeEvent {
+        object GetHome : HomeEvent()
+    }
+
+    private suspend fun getDataList() {
 
             try {
                 loaderState =  LoaderState.LOADING
@@ -48,11 +67,10 @@ class DataViewModel : ViewModel() {
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
             }
+
             loaderState =  LoaderState.IDLE
-        }
+
     }
-
-
 
     fun loadMoreData() {
         if(_dataList.size < response.size) {

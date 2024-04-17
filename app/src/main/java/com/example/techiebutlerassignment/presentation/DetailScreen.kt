@@ -21,7 +21,6 @@ import com.google.gson.GsonBuilder
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailsScreen(jasonData: String) {
-    val navController = rememberNavController()
     val gson: Gson = GsonBuilder().create()
     val data: DataModel = gson.fromJson(jasonData, DataModel::class.java)
 
